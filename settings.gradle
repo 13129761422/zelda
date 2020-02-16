@@ -1,0 +1,5 @@
+include ':zelda-engine',
+        ':buildSrc',
+        ':zelda-builder',
+        ':base-lib-stub'
+rootProject.name = 'Zelda'

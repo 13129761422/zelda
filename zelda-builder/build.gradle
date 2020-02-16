@@ -1,0 +1,27 @@
+import com.virjar.zelda.buildsrc.Constants
+
+buildscript {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    }
+
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
+    }
+}
+
+Constants.devBuild = true
+
+apply from: 'build-Base.gradle'
+
+//engine apk
+task injectZeldaEngineAPK(type: Copy) {
+    from '../zelda-engine/build/outputs/apk/debug/zelda-engine-debug.apk'
+    into 'src/main/resources/'
+    rename {
+        Constants.ZELDA_ENGINE_RESOURCE_APK_NAME
+    }
+}
+injectZeldaEngineAPK.dependsOn(':zelda-engine:assembleDebug')
+processResources.dependsOn(injectZeldaEngineAPK)
+
