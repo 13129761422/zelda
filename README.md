@@ -52,4 +52,4 @@ virjar-share:zelda-open virjar$
 
 
 # 申明
-部分代码使用了asLody的virtualApp(https://github.com/asLody/VirtualApp),请在VA的许可下使用本项目
+部分代码使用了asLody的virtualApp(https://github.com/asLody/VirtualApp ),请在VA的许可下使用本项目

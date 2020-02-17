@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.os.Build;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -32,7 +31,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.robv.android.xposed.XposedHelpers;
-import mirror.dalvik.system.VMRuntime;
 
 public class ZeldaRuntime {
 
@@ -198,14 +196,6 @@ public class ZeldaRuntime {
             //throwable.printStackTrace();
             return Build.VERSION.SDK_INT;
         }
-
-    }
-
-    public static boolean is64bit() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return Process.is64Bit();
-        }
-        return VMRuntime.is64Bit.call(VMRuntime.getRuntime.call());
 
     }
 
