@@ -62,9 +62,10 @@ public class AppBindDataFixer {
 
     private static void fixApplicationInfo(Object appBindData) {
         ApplicationInfo applicationInfo = (ApplicationInfo) XposedHelpers.getObjectField(appBindData, "appInfo");
-
+        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
         fixObjectField(applicationInfo, applicationInfo.getClass());
-
+        //TODO hook linker,to change nativeLibraryDir
+        applicationInfo.nativeLibraryDir = nativeLibraryDir;
         if (!TextUtils.isEmpty(ZeldaRuntime.originApplicationName)) {
             applicationInfo.className = ZeldaRuntime.originApplicationName;
         } else {

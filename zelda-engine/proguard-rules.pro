@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 # 这个暂时加上，测试没问题的时候关闭他
--keepattributes SourceFile,LineNumberTable
+# -keepattributes SourceFile,LineNumberTable
 
 #这是因为，我们的class需要注入到apk中，如果单纯混淆，有一定可能导致和原生app的混淆重名，这会导致重复类发生
 -flattenpackagehierarchy com.virjar.zelda.other
