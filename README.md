@@ -53,3 +53,38 @@ virjar-share:zelda-open virjar$
 
 # 申明
 部分代码使用了asLody的virtualApp(https://github.com/asLody/VirtualApp ),请在VA的许可下使用本项目
+
+# FAQ
+部分手机可能构建失败，主要体现在dl_open失败，这是因为dl_open符号hook不完整导致的。如果你遇到某个app在某些手机上面打开闪退，并且有类似如下文案:
+``dlopen failed:library "/data/app/xxxx/lib/arm/libxxx.so" not found"``
+此时有两中解决方法
+### 治标：
+https://github.com/virjar/zelda/blob/master/zelda-engine/src/main/java/com/virjar/zelda/engine/fixer/AppBindDataFixer.java#L65
+修改为如下代码：
+```        String nativeLibraryDir = applicationInfo.nativeLibraryDir;
+           fixObjectField(applicationInfo, applicationInfo.getClass());
+           //TODO hook linker,to change nativeLibraryDir
+           applicationInfo.nativeLibraryDir = nativeLibraryDir;
+```
+### 治本
+
+从你的手机中，获取linker的二进制
+```shel
+adb pull /system/bin/linker
+```
+然后用ida打开linker文件，搜索 dl_open相关符号,然后维护到这里:
+https://github.com/virjar/zelda/blob/master/zelda-engine/src/main/cpp/Foundation/IOUniformer.cpp#L642
+```
+if (findSymbol("__dl__Z9do_dlopenPKciPK17android_dlextinfoPv", "linker",
+                       (unsigned long *) &symbol) == 0) {
+            MSHookFunction(symbol, (void *) new_do_dlopen_V24,
+                           (void **) &orig_do_dlopen_V24);
+        } else if (findSymbol("__dl__Z9do_dlopenPKciPK17android_dlextinfoPKv", "linker",
+                              (unsigned long *) &symbol) == 0) {
+            //小米9,android9
+            MSHookFunction(symbol, (void *) new_do_dlopen_V24,
+                           (void **) &orig_do_dlopen_V24);
+        }// 在这里增加新的符号处理逻辑
+}
+```
+修复好提交一个PR，非常感谢

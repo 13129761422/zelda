@@ -59,7 +59,7 @@ void IOUniformer::init_env_before_all() {
             add_replace_item(item_src, item_dst);
             i++;
         }
-        startUniformer(getenv("V_SO_PATH"),api_level, preview_api_level);
+        startUniformer(getenv("V_SO_PATH"), api_level, preview_api_level);
         iu_loaded = true;
     }
 }
@@ -638,17 +638,24 @@ int findSymbol(const char *name, const char *libn,
 
 void hook_dlopen(int api_level) {
     void *symbol = NULL;
+
+
     if (api_level > 23) {
         if (findSymbol("__dl__Z9do_dlopenPKciPK17android_dlextinfoPv", "linker",
                        (unsigned long *) &symbol) == 0) {
             MSHookFunction(symbol, (void *) new_do_dlopen_V24,
-                          (void **) &orig_do_dlopen_V24);
+                           (void **) &orig_do_dlopen_V24);
+        } else if (findSymbol("__dl__Z9do_dlopenPKciPK17android_dlextinfoPKv", "linker",
+                              (unsigned long *) &symbol) == 0) {
+            //小米9,android9
+            MSHookFunction(symbol, (void *) new_do_dlopen_V24,
+                           (void **) &orig_do_dlopen_V24);
         }
     } else if (api_level >= 19) {
         if (findSymbol("__dl__Z9do_dlopenPKciPK17android_dlextinfo", "linker",
                        (unsigned long *) &symbol) == 0) {
             MSHookFunction(symbol, (void *) new_do_dlopen_V19,
-                          (void **) &orig_do_dlopen_V19);
+                           (void **) &orig_do_dlopen_V19);
         }
     } else {
         if (findSymbol("__dl_dlopen", "linker",
